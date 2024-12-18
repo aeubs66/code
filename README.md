@@ -1,42 +1,10 @@
-<h1 align="center">✨ SaaS Code Editor - Next.js 15 ✨</h1>
 
-![Demo App](/public/screenshot-for-readme.png)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_YWRlcXVhdGUtc2NvcnBpb24tOTYuY2xlcmsuYWNjb3VudHMuZGV2JA CLERK_SECRET_KEY=sk_test_CvZq8M84s59tT7McFqWRTm2xuXbd2Yim8Zu9OXzmbz
 
-[Watch Full Tutorial on Youtube](https://youtu.be/fGkRQgf6Scw)
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/ NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
 
-Highlights:
+CONVEX_DEPLOYMENT=dev:accurate-weasel-189 # team: aeubs66, project: coder
 
-- 🚀 Tech stack: Next.js 15 + Convex + Clerk + TypeScript
-- 💻 Online IDE with multi-language support (10 languages)
-- 🎨 Customizable experience with 5 VSCode themes
-- ✨ Smart output handling with Success & Error states
-- 💎 Flexible pricing with Free & Pro plans
-- 🤝 Community-driven code sharing system
-- 🔍 Advanced filtering & search capabilities
-- 👤 Personal profile with execution history tracking
-- 📊 Comprehensive statistics dashboard
-- ⚙️ Customizable font size controls
-- 🔗 Webhook integration support
-- 🌟 Professional deployment walkthrough
+NEXT_PUBLIC_CONVEX_URL=https://accurate-weasel-189.convex.cloud
 
-### Setup .env file
-
-```js
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
-CLERK_SECRET_KEY=
-CONVEX_DEPLOYMENT=
-NEXT_PUBLIC_CONVEX_URL=
-```
-
-### Add these env to Convex Dashboard
-
-```js
-CLERK_WEBHOOK_SECRET=
-LEMON_SQUEEZY_WEBHOOK_SECRET=
-```
-
-### Run the app
-
-```shell
-npm run dev
-```
+NEXT_PUBLIC_CONVEX_URL=https://accurate-weasel-189.convex.cloud
