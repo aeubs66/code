@@ -9,3 +9,6 @@ CONVEX_DEPLOYMENT=dev:accurate-weasel-189 # team: aeubs66, project: coder
 NEXT_PUBLIC_CONVEX_URL=https://accurate-weasel-189.convex.cloud
 
 NEXT_PUBLIC_CONVEX_URL=https://accurate-weasel-189.convex.cloud
+
+
+https://helped-killdeer-67.clerk.accounts.dev
