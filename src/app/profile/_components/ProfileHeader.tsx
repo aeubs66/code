@@ -47,19 +47,6 @@ function ProfileHeader({ userStats, userData, user }: ProfileHeaderProps) {
       },
     },
     {
-      label: "Starred Snippets",
-      value: starredSnippets?.length ?? 0,
-      icon: Star,
-      color: "from-yellow-500 to-orange-500",
-      gradient: "group-hover:via-yellow-400",
-      description: "Saved for later",
-      metric: {
-        label: "Most starred",
-        value: userStats?.mostStarredLanguage ?? "N/A",
-        icon: Trophy,
-      },
-    },
-    {
       label: "Languages Used",
       value: userStats?.languagesCount ?? 0,
       icon: Code2,

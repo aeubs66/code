@@ -19,7 +19,7 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Code Craft",
-  description: "Share and run code snippets",
+  description: "Run your code",
 };
 
 export default function RootLayout({
