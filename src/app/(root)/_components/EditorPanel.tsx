@@ -20,11 +20,11 @@ function EditorPanel() {
 
   // Load saved code from localStorage
   useEffect(() => {
-    if (!mounted || !editor) return;
+    if (!mounted || !editor) return; // Ensure editor is initialized
 
     const savedCode = localStorage.getItem(`editor-code-${language}`);
     const newCode = savedCode || LANGUAGE_CONFIG[language].defaultCode;
-    editor.setValue(newCode);
+    editor.setValue(newCode); // Call setValue on the editor instance
   }, [language, editor, mounted]);
 
   // Load saved font size from localStorage
@@ -116,7 +116,7 @@ function EditorPanel() {
               onChange={handleEditorChange}
               theme={theme}
               beforeMount={defineMonacoThemes}
-              onMount={(editor) => setEditor(editor)}
+              onMount={(editorInstance) => setEditor(editorInstance)} // Set the editor instance
               options={{
                 minimap: { enabled: false },
                 fontSize,
