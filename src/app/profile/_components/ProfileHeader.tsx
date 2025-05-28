@@ -1,5 +1,6 @@
-import { useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
+// Remove these unused imports
+// import { useQuery } from "convex/react";
+// import { api } from "../../../../convex/_generated/api";
 import { Activity, Code2, Timer, TrendingUp, UserIcon, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { Id } from "../../../../convex/_generated/dataModel";
