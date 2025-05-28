@@ -116,7 +116,7 @@ function EditorPanel() {
               onChange={handleEditorChange}
               theme={theme}
               beforeMount={defineMonacoThemes}
-              onMount={(editorInstance) => setEditor(editorInstance)} // Set the editor instance
+              onMount={(editorInstance) => setEditor(editorInstance)}
               options={{
                 minimap: { enabled: false },
                 fontSize,
