@@ -1,5 +1,6 @@
 import { Monaco } from "@monaco-editor/react";
 import { Theme } from "../../../types";
+import { editor as monacoEditor } from "monaco-editor";
 
 type LanguageConfig = Record<
   string,
@@ -349,13 +350,13 @@ type BuiltinTheme = "vs" | "vs-dark" | "hc-black" | "hc-light";
 interface ThemeDefinition {
   base: BuiltinTheme;
   inherit: boolean;
-  rules: any[];
+  rules: monacoEditor.ITokenThemeRule[];
   colors: Record<string, string>;
 }
 
 export const THEME_DEFINITONS: Record<string, ThemeDefinition> = {
   "github-dark": {
-    base: "vs-dark" as "vs-dark",
+    base: "vs-dark" as const,
     inherit: true,
     rules: [
       { token: "comment", foreground: "6e7681" },
@@ -379,7 +380,7 @@ export const THEME_DEFINITONS: Record<string, ThemeDefinition> = {
     },
   },
   monokai: {
-    base: "vs-dark" as "vs-dark",
+    base: "vs-dark" as const,
     inherit: true,
     rules: [
       { token: "comment", foreground: "75715E" },
@@ -403,7 +404,7 @@ export const THEME_DEFINITONS: Record<string, ThemeDefinition> = {
     },
   },
   "solarized-dark": {
-    base: "vs-dark" as "vs-dark",
+    base: "vs-dark" as const,
     inherit: true,
     rules: [
       { token: "comment", foreground: "586e75" },
