@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="460" viewBox="0 0 1280 460" role="img" aria-labelledby="title desc">
+<title id="title">CodeCraft — Your next idea starts here.</title>
+<desc id="desc">Dark blue and violet banner with an illustrated code editor. Write, run, and revisit code in your browser.</desc>
+<defs>
+<linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b1020"/><stop offset="1" stop-color="#17132b"/></linearGradient>
+<linearGradient id="accent"><stop stop-color="#60a5fa"/><stop offset="1" stop-color="#c4a5ff"/></linearGradient>
+<pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#9ca8ff" stroke-opacity=".045"/></pattern>
+</defs>
+<rect width="1280" height="460" rx="24" fill="url(#bg)"/>
+<rect width="1280" height="460" rx="24" fill="url(#grid)"/>
+<circle cx="1080" cy="224" r="230" fill="#7c3aed" opacity=".06"/>
+<circle cx="1080" cy="224" r="187" fill="none" stroke="#9f89fa" stroke-opacity=".13"/>
+<g font-family="Segoe UI, Arial, sans-serif">
+<rect x="60" y="50" width="247" height="30" rx="15" fill="#7092ff" fill-opacity=".1" stroke="#8fafff" stroke-opacity=".25"/>
+<text x="77" y="70" fill="#a9c5ff" font-size="11" font-weight="700" letter-spacing="1.6">YOUR BROWSER. YOUR PLAYGROUND.</text>
+<text x="56" y="178" fill="url(#accent)" font-size="73" font-weight="750" letter-spacing="-3">CodeCraft</text>
+<text x="60" y="239" fill="#eef2ff" font-size="34" font-weight="600" letter-spacing="-.7">Your next idea starts here.</text>
+<text x="60" y="281" fill="#9caac5" font-size="19">Write, run, and revisit code in your browser.</text>
+<path d="M60 324H603" stroke="#a7b5f5" stroke-opacity=".18"/>
+<text x="60" y="362" fill="#8794b2" font-size="11" font-weight="700" letter-spacing="1.8">10 LANGUAGES</text>
+<text x="244" y="362" fill="#8794b2" font-size="11" font-weight="700" letter-spacing="1.8">5 EDITOR THEMES</text>
+<text x="459" y="362" fill="#8794b2" font-size="11" font-weight="700" letter-spacing="1.8">SAVED HISTORY</text>
+<text x="60" y="406" fill="#c1cce4" font-size="15">Next.js 15</text><circle cx="149" cy="401" r="2" fill="#8b9fff"/>
+<text x="167" y="406" fill="#c1cce4" font-size="15">TypeScript</text><circle cx="259" cy="401" r="2" fill="#8b9fff"/>
+<text x="277" y="406" fill="#c1cce4" font-size="15">Monaco</text><circle cx="352" cy="401" r="2" fill="#8b9fff"/>
+<text x="370" y="406" fill="#c1cce4" font-size="15">Convex</text>
+</g>
+<g transform="translate(724 65)">
+<rect x="0" y="12" width="493" height="332" rx="20" fill="#030611" opacity=".5"/>
+<rect width="493" height="332" rx="20" fill="#0e1526" stroke="#364064"/>
+<path d="M0 52H493" stroke="#2d3652"/>
+<circle cx="23" cy="26" r="5" fill="#fb7185"/><circle cx="42" cy="26" r="5" fill="#fbbf24"/><circle cx="61" cy="26" r="5" fill="#34d399"/>
+<g font-family="Consolas, monospace" font-size="14">
+<text x="93" y="31" fill="#b7c4e2">playground.js</text>
+<rect x="395" y="14" width="73" height="26" rx="7" fill="#263c70"/>
+<path d="M407 22l7 5-7 5z" fill="#93c5fd"/>
+<text x="423" y="32" fill="#b8d4ff" font-size="12">Run</text>
+<g fill="#53617d"><text x="23" y="92">1</text><text x="23" y="123">2</text><text x="23" y="154">3</text><text x="23" y="185">4</text></g>
+<text x="55" y="92" fill="#7788aa">// Make room for your next idea.</text>
+<text x="55" y="123" fill="#c4b5fd">const <tspan fill="#dce5fa">greet = (name) =&gt; {</tspan></text>
+<text x="75" y="154" fill="#93c5fd">return <tspan fill="#86efac">"Hello, " + name;</tspan></text>
+<text x="55" y="185" fill="#dce5fa">};</text>
+<text x="55" y="216" fill="#dce5fa">console.<tspan fill="#93c5fd">log</tspan>(greet(<tspan fill="#86efac">"CodeCraft"</tspan>));</text>
+<path d="M20 239H473" stroke="#2d3652"/>
+<text x="24" y="268" fill="#7788aa" font-size="11" letter-spacing="1.4">OUTPUT</text>
+<circle cx="451" cy="264" r="4" fill="#34d399"/>
+<text x="24" y="302" fill="#86efac">Hello, CodeCraft</text>
+</g>
+</g>
+</svg>
