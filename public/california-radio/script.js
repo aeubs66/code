@@ -46,37 +46,59 @@ function announcement(r){
   const closing=r.slug==='los-angeles'?'Wherever this morning finds you, let the city wake up slowly, and enjoy a little sunshine.':'From the waterfront to the quiet hills, may your day start peacefully.';
   return 'Good morning, '+r.city+'. It is '+weekday+', '+prettyDate(r.date)+', and welcome to a little moment of California calm. At the latest weather check, it is '+r.current_temp+' degrees with '+r.current_desc+'. Today brings '+r.today_desc+', with a high near '+r.today_high+' degrees, and a low around '+r.today_low+' tonight. '+wind+rain+'Looking ahead to tomorrow, expect '+r.tomorrow_desc+', a high around '+r.tomorrow_high+', and a nighttime low near '+r.tomorrow_low+'. '+closing+' This is Good Morning, '+r.city+'.';
 }
-function voiceChoice(){
-  const voices=speechSynthesis.getVoices().filter(v=>/^en[-_]/i.test(v.lang));
-  for(const candidate of ['Aria','Jenny','Samantha','Ava','Zira','Google US English','Female']){
-    const found=voices.find(v=>v.name.toLowerCase().includes(candidate.toLowerCase()));
-    if(found)return found;
-  }
-  return voices.find(v=>/en[-_]US/i.test(v.lang))||voices[0]||null;
-}
-function startMusic(){
-  const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;
-  const ctx=new A(),out=ctx.createGain();out.gain.setValueAtTime(.0001,ctx.currentTime);out.gain.exponentialRampToValueAtTime(.015,ctx.currentTime+2);out.connect(ctx.destination);
-  const notes=[220,261.63,329.63,392],oscillators=[];
-  notes.forEach(f=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;g.gain.value=.16;o.connect(g);g.connect(out);o.start();oscillators.push(o);});
-  const timer=setInterval(()=>{if(ctx.state==='closed')return;const t=ctx.currentTime,o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=notes[Math.floor(t/5)%4]*2;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.06,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+3);o.connect(g);g.connect(out);o.start(t);o.stop(t+3.05);},4900);
-  return ()=>{clearInterval(timer);if(ctx.state==='closed')return;out.gain.setTargetAtTime(.00001,ctx.currentTime,.5);setTimeout(()=>{oscillators.forEach(o=>{try{o.stop()}catch{}});ctx.close().catch(()=>{});},2800);};
+const speechCache=new Map();
+let preferredVoice=(()=>{try{return localStorage.getItem('california-radio-voice')||'af_nicole'}catch{return 'af_nicole'}})();
+function updateVoice(voice){
+  preferredVoice=voice;
+  try{localStorage.setItem('california-radio-voice',voice)}catch{}
+  document.querySelectorAll('.voice-choice').forEach(select=>select.value=voice);
 }
 function stop(){
   if(!playing)return;
   const item=playing;playing=null;
-  speechSynthesis.cancel();item.stopMusic?.();
-  item.button.textContent='▶ Listen live · free';item.button.setAttribute('aria-pressed','false');
+  if(item.audio){item.audio.pause();item.audio.currentTime=0;}
+  item.button.textContent='▶ Hear the new neural voice';
+  item.button.setAttribute('aria-pressed','false');
+  document.getElementById('status-message').textContent='Ready to tune in.';
 }
-function speak(r,button){
+async function speak(r,button){
   if(playing){const same=playing.button===button;stop();if(same)return;}
-  if(!('speechSynthesis' in window)){document.getElementById('status-message').textContent='Your browser does not support speech playback. Try Safari, Chrome or Edge.';return;}
-  const u=new SpeechSynthesisUtterance(announcement(r));const voice=voiceChoice();if(voice)u.voice=voice;
-  u.lang='en-US';u.rate=.87;u.pitch=1.03;u.volume=1;
-  const stopMusic=startMusic();playing={button,stopMusic};button.textContent='■ Stop broadcast';button.setAttribute('aria-pressed','true');
-  u.onend=()=>{if(playing?.button===button)stop()};
-  u.onerror=e=>{if(playing?.button===button)stop();document.getElementById('status-message').textContent='Speech playback interrupted: '+(e.error||'browser error')};
-  speechSynthesis.cancel();speechSynthesis.speak(u);
+  const engine=window.CaliforniaNeuralVoice;
+  if(!engine){document.getElementById('status-message').textContent='Neural voice engine unavailable. Please reload the page.';return;}
+  const item={button,audio:null};
+  playing=item;button.setAttribute('aria-pressed','true');
+  button.textContent='◌ Preparing neural voice…';
+  const status=document.getElementById('status-message');
+  const voice=preferredVoice,key=r.slug+':'+r.date+':'+voice;
+  try{
+    let cached=speechCache.get(key);
+    if(!cached){
+      // Do not synthesize a second time for the same city/voice/date.
+      cached=await engine.generate(announcement(r),voice,message=>{
+        if(playing===item){button.textContent='◌ '+message;status.textContent=message;}
+      });
+      speechCache.set(key,cached);
+    }
+    if(playing!==item)return;
+    const url=URL.createObjectURL(cached.blob);
+    const audio=new Audio(url);item.audio=audio;
+    audio.onended=()=>{URL.revokeObjectURL(url);if(playing===item)stop();};
+    audio.onerror=()=>{URL.revokeObjectURL(url);if(playing===item){stop();status.textContent='Playback failed. Try your browser’s latest version.';}};
+    button.textContent='■ Stop broadcast';
+    status.textContent='Now playing '+r.city+' · '+Math.round(cached.duration)+' seconds · '+engine.voices[voice]+' · soft music included.';
+    const card=button.closest('.weather-card');
+    let download=card.querySelector('.wav-download');
+    if(!download){download=element('a','wav-download','↓ Download your recording');card.append(download);}
+    // A download keeps its own object URL, independent from this playback.
+    const old=download.dataset.blobUrl;
+    if(old)URL.revokeObjectURL(old);
+    download.href=URL.createObjectURL(cached.blob);
+    download.dataset.blobUrl=download.href;
+    download.download=r.slug+'-'+r.date+'-'+voice+'.wav';
+    await audio.play();
+  }catch(error){
+    if(playing===item){stop();status.textContent='Neural voice could not run on this device: '+(error?.message||'unknown error')+'. Try Chrome or Edge on a computer if the model exceeds your phone’s memory.';}
+  }
 }
 function card(r){
   const a=element('article','weather-card '+(r.slug==='san-francisco'?'sf':'la'));
@@ -89,8 +111,15 @@ function card(r){
   a.append(fc,element('div','separator'));
   const label=element('div','play-caption');label.append(element('span','',r.audio?'☼ RECORDED EDITION':'☼ LIVE EDITION'),element('span','',r.audio?Math.round(r.duration||45)+' SEC':'FREE · ON DEMAND'));a.append(label);
   if(r.audio){const audio=element('audio');audio.controls=true;audio.preload='none';audio.setAttribute('aria-label','Play recorded broadcast for '+r.city);const src=element('source');src.src=r.audio;src.type='audio/mpeg';audio.append(src);a.append(audio);}
-  const button=element('button','live-play','▶ Listen live · free');button.type='button';button.setAttribute('aria-label','Play free live radio for '+r.city);button.setAttribute('aria-pressed','false');button.onclick=()=>speak(r,button);a.append(button);
-  a.append(element('p','voice-note','Real live weather. Your browser’s American English voice with gentle ambient synth and piano. No subscription or credits.'));
+  const voiceLabel=element('label','voice-label','RADIO VOICE');
+  const choice=element('select','voice-choice');choice.setAttribute('aria-label','Choose female radio voice for '+r.city);
+  for(const [id,title] of Object.entries(window.CaliforniaNeuralVoice?.voices||{af_nicole:'Nicole · Soft & intimate',af_heart:'Heart · Warm & grounded',af_bella:'Bella · Smooth & expressive'})){
+    const option=element('option','',title);option.value=id;choice.append(option);
+  }
+  choice.value=preferredVoice;choice.onchange=()=>{if(playing)stop();updateVoice(choice.value)};
+  voiceLabel.append(choice);a.append(voiceLabel);
+  const button=element('button','live-play','▶ Hear the new neural voice');button.type='button';button.setAttribute('aria-label','Generate and listen to natural neural radio for '+r.city);button.setAttribute('aria-pressed','false');button.onclick=()=>speak(r,button);a.append(button);
+  a.append(element('p','voice-note','Free natural neural voice, not your browser’s robotic system voice. First listen downloads the model; original piano and synth music is mixed into the recording.'));
   return a;
 }
 async function load(){
@@ -102,8 +131,8 @@ async function load(){
       if(response.ok){const data=await response.json();if(data.date===pacificDate()&&Array.isArray(data.reports))current.forEach(r=>{const x=data.reports.find(y=>y.slug===r.slug);if(x?.audio){r.audio=x.audio;r.duration=x.duration}});}
     }catch{}
     box.replaceChildren(...current.map(card));document.getElementById('edition').textContent=prettyDate(pacificDate())+' · Pacific time';
-    status.textContent=current.every(r=>r.audio)?'Recorded MP3 editions are ready. Or listen live for the newest conditions.':'Two free live broadcasts are ready. Press Listen live. Automatic MP3 publishing is not yet active.';
+    status.textContent=current.every(r=>r.audio)?'Recorded MP3 editions are ready. Or listen live for the newest conditions.':'Two free live broadcasts are ready. Choose a warm female neural voice and press Play. First use downloads the free AI model. Automatic morning MP3 publishing is not yet active.';
   }catch(e){box.replaceChildren(element('article','placeholder','The live weather service is unavailable. No forecast will be invented.'));status.textContent='Unable to verify weather: '+e.message;}
 }
-const css=document.createElement('style');css.textContent='.live-play{width:100%;border:1px solid #e5bc8b;border-radius:8px;padding:15px;margin-top:13px;background:#e6c49a;color:#1c3030;font-size:12px;letter-spacing:.13em;font-weight:700;cursor:pointer}.live-play[aria-pressed=true]{background:#213a3c;color:#f2ede1}.voice-note{font-size:11px;color:#bdc6bc;line-height:1.6;margin:10px 0 0}';document.head.append(css);
+const css=document.createElement('style');css.textContent='.voice-label{display:block;font-size:10px;letter-spacing:.16em;color:#dfb980;margin:17px 0 5px}.voice-choice{display:block;width:100%;margin-top:8px;border:1px solid #69817a;border-radius:7px;background:#213739;color:#f2ede1;padding:12px 10px;font:inherit;font-size:13px;letter-spacing:0}.wav-download{display:block;margin-top:15px;font-size:12px;color:#dfb980;text-decoration:underline;text-underline-offset:4px}.live-play{width:100%;border:1px solid #e5bc8b;border-radius:8px;padding:15px;margin-top:13px;background:#e6c49a;color:#1c3030;font-size:12px;letter-spacing:.13em;font-weight:700;cursor:pointer}.live-play[aria-pressed=true]{background:#213a3c;color:#f2ede1}.voice-note{font-size:11px;color:#bdc6bc;line-height:1.6;margin:10px 0 0}';document.head.append(css);
 updateClock();setInterval(updateClock,60000);load();
