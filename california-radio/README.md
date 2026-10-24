@@ -5,11 +5,11 @@ Two gentle morning broadcasts, made in the cloud **daily at 8:00 AM Los Angeles 
 - **Good Morning, Los Angeles**
 - **Good Morning, San Francisco**
 
-No paid AI API or ElevenLabs credits. Weather is fetched fresh from **Open-Meteo**. Voices come from the open-source **Kokoro-82M** model, using American female voice `af_heart`; an original quiet synth/piano underscore is created in Python. Final MP3s are published to a mobile-friendly GitHub Pages website.
+No paid AI API or ElevenLabs credits. Weather is fetched fresh from **Open-Meteo**. Voices come from the open-source **Kokoro-82M** model, using American female voice `af_heart`; an original quiet synth/piano underscore is created in Python. Final MP3s are published to a mobile-friendly site through the existing repository’s Vercel deployment.
 
 ## Hosted URL
 
-Once GitHub Pages is enabled, use **`https://aeubs66.github.io/code/`** for this repository (if running as part of `aeubs66/code`). GitHub Pages only works after selecting **Settings → Pages → Source: GitHub Actions** on the repository. If this hasn't been enabled yet, the link won't be live.
+If the existing Vercel deployment for `aeubs66/code` remains connected, use **`https://code-dusky-kappa.vercel.app/california-radio/index.html`**. Static files are served from the Next.js `public/california-radio/` folder. Confirm this URL after Vercel deploys; it is not proof of an active website until tested.
 
 ## Automatic generation
 
@@ -31,7 +31,7 @@ Install Python 3.11+, `ffmpeg`, `espeak-ng`, and `pip install -r requirements.tx
 python -m radio.broadcast --site site
 ```
 
-Output: `site/audio/los-angeles-YYYY-MM-DD.mp3`, `site/audio/san-francisco-YYYY-MM-DD.mp3`, and `site/data.json`. The browser page is static and does not need a server after generation.
+Output: `site/audio/los-angeles-YYYY-MM-DD.mp3`, `site/audio/san-francisco-YYYY-MM-DD.mp3`, and `site/data.json`. In GitHub Actions the site output is generated inside the existing Next.js `public/california-radio/` directory, and the resulting audio/metadata are committed automatically. The browser page is static and can be served by Vercel or any static web host after generation.
 
 Use `python -m radio.broadcast --dry-run` to verify live weather without spending compute resources on the voice model.
 
@@ -46,4 +46,4 @@ Use `python -m radio.broadcast --dry-run` to verify live weather without spendin
 
 ## Licenses and attribution
 
-Weather: [Open-Meteo](https://open-meteo.com/) (CC BY 4.0). Speech: [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (Apache 2.0). All sound-bed synthesis is original source code within this project. The generated audio is intended for personal noncommercial listening. GitHub Pages/Actions usage is subject to GitHub's published limits.
+Weather: [Open-Meteo](https://open-meteo.com/) (CC BY 4.0). Speech: [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) (Apache 2.0). All sound-bed synthesis is original source code within this project. The generated audio is intended for personal noncommercial listening. GitHub Actions and Vercel hosting usage are subject to their published limits.
